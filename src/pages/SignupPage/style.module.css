@@ -1,0 +1,16 @@
+.SignupPage {
+  width: 100%;
+  border: 1px solid #eee;
+  box-sizing: border-box;
+  box-shadow: 0 2px 3px #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.SignupPage input {
+  width: 200px;
+  display: block;
+  font-size: 14px;
+  padding: 5px;
+  margin: 10px auto;
+}
