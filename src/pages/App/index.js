@@ -1,58 +1,60 @@
-import React, { Component } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import css from "./style.module.css";
 import Toolbar from "../../components/Toolbar";
-import BurgerPage from "../BurgerPage";
 import SideBar from "../../components/SideBar";
-import OrderPage from "../OrderPage";
 import { Switch, Route, Redirect } from "react-router-dom";
 import ShippingPage from "../ShippingPage";
 import LoginPage from "../LoginPage";
-import SignupPage from "../SignupPage";
 import { connect } from "react-redux";
 import Logout from "../../components/Logout";
 import * as actions from "../../redux/action/loginActions";
 import * as signupActions from "../../redux/action/signupActions";
 
-class App extends Component {
-  state = {
-    showSideBar: false,
+const BurgerPage = React.lazy(() => {
+  return import("../BurgerPage");
+});
+
+const SignupPage = React.lazy(() => {
+  return import("../SignupPage");
+});
+
+const OrderPage = React.lazy(() => {
+  return import("../OrderPage");
+});
+
+const App = (props) => {
+  const [showSideBar, setShowSideBar] = useState(false);
+
+  const toggleSideBar = () => {
+    setShowSideBar((prevShowSidebar) => !prevShowSidebar);
   };
 
-  toggleSideBar = () => {
-    this.setState((prevState) => {
-      return { showSideBar: !prevState.showSideBar };
-    });
-  };
-
-  componentDidMount = () => {
+  useEffect(() => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
     const expireDate = new Date(localStorage.getItem("expireDate"));
     // const refreshToken = localStorage.getItem("refreshToken");
     if (token && userId) {
       if (expireDate > new Date()) {
-        this.props.autoLogin(token, userId);
-        this.props.autoLogoutAfterMillisec(
+        props.autoLogin(token, userId);
+        props.autoLogoutAfterMillisec(
           expireDate.getTime() - new Date().getTime()
         );
       } else {
-        this.props.logout();
+        props.logout();
       }
     }
-  };
+  }, []);
 
-  render() {
-    return (
-      <div>
-        <Toolbar toggleSideBar={this.toggleSideBar} />
+  return (
+    <div>
+      <Toolbar toggleSideBar={toggleSideBar} />
 
-        <SideBar
-          showSideBar={this.state.showSideBar}
-          toggleSideBar={this.toggleSideBar}
-        />
+      <SideBar showSideBar={showSideBar} toggleSideBar={toggleSideBar} />
 
-        <main className={css.Content}>
-          {this.props.userId ? (
+      <main className={css.Content}>
+        <Suspense fallback={<div>Түр хүлээнэ үү!</div>}>
+          {props.userId ? (
             <Switch>
               <Route path="/logout" component={Logout} />
               <Route path="/orders" component={OrderPage} />
@@ -66,11 +68,11 @@ class App extends Component {
               <Redirect to="/login" />
             </Switch>
           )}
-        </main>
-      </div>
-    );
-  }
-}
+        </Suspense>
+      </main>
+    </div>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {

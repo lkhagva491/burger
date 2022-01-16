@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "../../components/General/Button";
 import css from "./style.module.css";
 import { connect } from "react-redux";
@@ -6,47 +6,61 @@ import * as actions from "../../redux/action/loginActions";
 import Spinner from "../../components/General/Spinner";
 import { Redirect } from "react-router-dom";
 
-class LoginPage extends React.Component {
-  state = {
+const LoginPage = (props) => {
+  const [form, setForm] = useState({
     email: "",
     password: "",
+  });
+
+  const changeEmail = (e) => {
+    const changedEmail = e.target.value;
+    setForm((formBefore) => ({
+      email: changedEmail,
+      password: formBefore.password,
+    }));
   };
 
-  changeEmail = (e) => {
-    this.setState({ email: e.target.value });
+  const changePassword = (e) => {
+    const changedPassword = e.target.value;
+    setForm((formBefore) => ({
+      email: formBefore.email,
+      password: changedPassword,
+    }));
   };
 
-  changePassword = (e) => {
-    this.setState({ password: e.target.value });
+  const login = () => {
+    props.login(form.email, form.password);
   };
 
-  login = () => {
-    this.props.login(this.state.email, this.state.password);
-  };
+  // const validateEmail = (e) => {
+  //   if (
+  //     e.target.value &&
+  //     !e.target.value.match(
+  //       /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  //     )
+  //   ) {
+  //     alert("ИМэйл хаяг алдаатай байна!");
+  //   }
+  // };
 
-  render() {
-    return (
-      <div className={css.LoginPage}>
-        {this.props.userId && <Redirect to="/orders" />}
-        <input
-          onChange={this.changeEmail}
-          type="text"
-          placeholder="ИМэйл хаяг"
-        />
-        <input
-          onChange={this.changePassword}
-          type="password"
-          placeholder="Нууц үг"
-        />
-        {this.props.firebaseError && (
-          <div style={{ color: "red" }}>{this.props.firebaseError}</div>
-        )}
-        {this.props.logginIn && <Spinner />}
-        <Button text="Нэвтрэх" btnType="Success" daragdsan={this.login} />
-      </div>
-    );
-  }
-}
+  return (
+    <div className={css.LoginPage}>
+      {props.userId && <Redirect to="/orders" />}
+      <input
+        onChange={changeEmail}
+        // onBlur={validateEmail}
+        type="text"
+        placeholder="ИМэйл хаяг"
+      />
+      <input onChange={changePassword} type="password" placeholder="Нууц үг" />
+      {props.firebaseError && (
+        <div style={{ color: "red" }}>{props.firebaseError}</div>
+      )}
+      {props.logginIn && <Spinner />}
+      <Button text="Нэвтрэх" btnType="Success" daragdsan={login} />
+    </div>
+  );
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {

@@ -6,43 +6,41 @@ import css from "./style.module.css";
 import ContactData from "../../components/ContactData";
 import { connect } from "react-redux";
 
-class ShippingPage extends React.Component {
-  cancelOrder = () => {
-    this.props.history.goBack();
+const ShippingPage = (props) => {
+  const cancelOrder = () => {
+    props.history.goBack();
   };
 
-  showContactData = () => {
-    this.props.history.replace("/ship/contact");
+  const showContactData = () => {
+    props.history.replace("/ship/contact");
   };
 
-  render() {
-    return (
-      <div className={css.ShippingPage}>
-        <p>
-          <strong>Таны захиалга амттай байх болно гэж найдаж байна...</strong>
-        </p>
-        <p>
-          <strong>Дүн: {this.props.price}</strong>
-        </p>
-        <Burger />
-        <Button
-          daragdsan={this.cancelOrder}
-          btnType="Danger"
-          text="ЗАХИАЛГЫГ ЦУЦЛАХ"
-        />
-        <Button
-          daragdsan={this.showContactData}
-          btnType="Success"
-          text="ХҮРГЭЛТИЙН МЭДЭЭЛЭЛ ОРУУЛАХ"
-        />
+  return (
+    <div className={css.ShippingPage}>
+      <p style={{ fontSize: "20px" }}>
+        <strong>Таны захиалга амттай байх болно гэж найдаж байна...</strong>
+      </p>
+      <p style={{ fontSize: "20px" }}>
+        <strong>Дүн: {props.price}₮</strong>
+      </p>
+      <Burger />
+      <Button
+        daragdsan={cancelOrder}
+        btnType="Danger"
+        text="ЗАХИАЛГЫГ ЦУЦЛАХ"
+      />
+      <Button
+        daragdsan={showContactData}
+        btnType="Success"
+        text="ХҮРГЭЛТИЙН МЭДЭЭЛЭЛ ОРУУЛАХ"
+      />
 
-        <Route path="/ship/contact">
-          <ContactData />
-        </Route>
-      </div>
-    );
-  }
-}
+      <Route path="/ship/contact">
+        <ContactData />
+      </Route>
+    </div>
+  );
+};
 
 const mapStateToProps = (state) => {
   return {

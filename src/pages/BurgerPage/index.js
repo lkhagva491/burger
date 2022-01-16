@@ -1,52 +1,33 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import Burger from "../../components/Burger";
 import BuildControls from "../../components/BuildControls";
 import Modal from "../../components/General/Modal";
 import OrderSummary from "../../components/OrderSummary";
-import Spinner from "../../components/General/Spinner";
 
-class BurgerPage extends Component {
-  state = {
-    confirmOrder: false,
+const BurgerPage = (props) => {
+  const [confirmOrder, setConfirmOrder] = useState(false);
+
+  const continueOrder = () => {
+    props.history.push("/ship");
   };
 
-  continueOrder = () => {
-    this.props.history.push("/ship");
+  const showConfirmModal = () => {
+    setConfirmOrder(true);
   };
 
-  showConfirmModal = () => {
-    this.setState({ confirmOrder: true });
+  const closeConfirmModal = () => {
+    setConfirmOrder(false);
   };
 
-  closeConfirmModal = () => {
-    this.setState({ confirmOrder: false });
-  };
-
-  render() {
-    return (
-      <div>
-        <Modal
-          closeConfirmModal={this.closeConfirmModal}
-          show={this.state.confirmOrder}
-        >
-          {this.state.loading ? (
-            <Spinner />
-          ) : (
-            <OrderSummary
-              onCancel={this.closeConfirmModal}
-              onContinue={this.continueOrder}
-            />
-          )}
-        </Modal>
-        <Burger />
-        <BuildControls
-          showConfirmModal={this.showConfirmModal}
-          ortsNemeh={this.props.burgertOrtsNem}
-          ortsHasah={this.props.burgereesOrtsHas}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <Modal closeConfirmModal={closeConfirmModal} show={confirmOrder}>
+        <OrderSummary onCancel={closeConfirmModal} onContinue={continueOrder} />
+      </Modal>
+      <Burger />
+      <BuildControls showConfirmModal={showConfirmModal} />
+    </div>
+  );
+};
 
 export default BurgerPage;

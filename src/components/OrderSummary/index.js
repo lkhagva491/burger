@@ -1,12 +1,12 @@
 import React from "react";
 import Button from "../General/Button";
 import { connect } from "react-redux";
+import css from "./style.module.css";
 
 const OrderSummary = (props) => {
   return (
-    <div>
-      <h3>Таны захиалга</h3>
-      <p>Таны сонгосон орцууд:</p>
+    <div className={css.OrderSummary}>
+      <p>Сонгосон орц:</p>
       <ul>
         {Object.keys(props.ingredients).map((el) => (
           <li key={el}>
@@ -17,7 +17,6 @@ const OrderSummary = (props) => {
       <p>
         <strong>Захиалгын дүн: {props.price} төгрөг</strong>
       </p>
-      <p>Цааш үргэжлүүлэх үү?</p>
       <Button daragdsan={props.onCancel} btnType="Danger" text="ТАТГАЛЗАХ" />
       <Button
         daragdsan={props.onContinue}
